@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Saver</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>🚑 Life Saver</h1>
+
+    <h2>Emergency Contact</h2>
+<h2>My Phone Number</h2>
+
+<input
+    type="tel"
+    id="myPhone"
+    placeholder="నా ఫోన్ నంబర్"
+>
+
+<button onclick="saveMyPhone()">
+    💾 Save My Number
+</button>
+
+<p id="myPhoneStatus"></p>
+    <input
+        type="tel"
+        id="phone"
+        placeholder="Emergency నంబర్"
+    >
+
+    <button onclick="saveEmergencyContact()">
+        💾 Save Number
+    </button>
+
+    <p id="contactStatus"></p>
+
+    <br>
+
+    <button onclick="getLocation()">🚨 SOS</button>
+<button onclick="sendSOS()">🚨 Send SOS</button>
+<button onclick="callEmergency()">📞 Call Emergency Contact</button>
+    <button onclick="shareSOS()">📲 Share SOS</button>
+
+    <div id="menu">
+
+        <button onclick="openMaps('hospital')">
+            🏥 Hospitals
+        </button>
+
+        <button onclick="openMaps('pharmacy')">
+            💊 Medical Shops
+        </button>
+
+        <button onclick="openMaps('doctor')">
+            👨‍⚕️ Doctors
+        </button>
+
+        <button onclick="openMaps('police station')">
+            👮 Police
+        </button>
+
+        <button onclick="openMaps('file:///data/user/0/com.foxdebug.acodefree/files/public/index.htmlre station')">
+            🚒 Fire Station
+        </button>
+
+        <button onclick="openMaps('ambulance')">
+            🚑 Ambulance
+        </button>
+<button onclick="callNumber('112')">
+    👮 Call Police — 112
+</button>
+
+<button onclick="callNumber('101')">
+    🚒 Call Fire — 101
+</button>
+
+<button onclick="callNumber('108')">
+    🚑 Call Ambulance — 108
+</button>
+        <button onclick="makeEmergencyCall()">
+            📞 Emergency Call
+        </button>
+
+    </div>
+
+    <p id="status">Location not found</p>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
