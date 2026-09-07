@@ -13,10 +13,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Check ZIP file
+        run: |
+          echo "Files in repository:"
+          ls -la
+          echo "Checking ZIP:"
+          ls -lh "$GITHUB_WORKSPACE/life-saver.zip"
+
       - name: Extract Android project
         run: |
-          mkdir android-project
-          unzip -q life-saver.zip -d android-project
+          mkdir -p android-project
+          unzip -q "$GITHUB_WORKSPACE/life-saver.zip" -d android-project
 
       - name: Find Android project
         run: |
