@@ -28,6 +28,10 @@ jobs:
       - name: Find Android project
         run: |
           PROJECT_DIR=$(dirname "$(find "$GITHUB_WORKSPACE/android-project" -name settings.gradle.kts -print -quit)")
+          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
+            echo "Android project settings.gradle.kts not found"
+            exit 1
+          fi
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
           echo "Android project: $PROJECT_DIR"
 
@@ -40,7 +44,7 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: "8.13"
+          gradle-version: "9.3.1"
 
       - name: Build Debug APK
         working-directory: ${{ env.PROJECT_DIR }}
@@ -52,8 +56,17 @@ jobs:
             gradle assembleDebug
           fi
 
+      - name: Find APK
+        if: success()
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          echo "APK files:"
+          find app/build/outputs/apk -type f -name "*.apk" -print
+
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Life-Saver-APK
           path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
