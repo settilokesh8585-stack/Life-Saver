@@ -295,3 +295,71 @@ function aiEmergencyHelp() {
 
     alert(advice);
 }
+function voiceEmergencyHelp() {
+    if (!("webkitSpeechRecognition" in window)) {
+        alert("ఈ ఫోన్‌లో Voice Recognition support లేదు");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+
+    recognition.lang = "te-IN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    alert("🎤 ఇప్పుడు మీ Emergency గురించి మాట్లాడండి");
+
+    recognition.start();
+
+    recognition.onresult = function(event) {
+        const text = event.results[0][0].transcript;
+
+        alert("మీరు చెప్పారు:\n" + text);
+
+        aiEmergencyHelpWithText(text);
+    };
+
+    recognition.onerror = function() {
+        alert("❌ Voice వినలేకపోయాం. మళ్లీ ప్రయత్నించండి.");
+    };
+}
+
+
+function aiEmergencyHelpWithText(situation) {
+    const text = situation.toLowerCase();
+
+    let advice = "";
+
+    if (
+        text.includes("fire") ||
+        text.includes("మంట") ||
+        text.includes("అగ్ని")
+    ) {
+        advice =
+            "🚒 Fire Emergency\n\n" +
+            "1. వెంటనే సురక్షితమైన ప్రదేశానికి వెళ్లండి.\n" +
+            "2. పొగ ఉన్న ప్రదేశంలో కిందికి వంగి బయటకు వెళ్లండి.\n" +
+            "3. Fire service కోసం 101కి call చేయండి.";
+    }
+    else if (
+        text.includes("accident") ||
+        text.includes("అక్సిడెంట్") ||
+        text.includes("ప్రమాదం")
+    ) {
+        advice =
+            "🚑 Accident Emergency\n\n" +
+            "1. ముందుగా సురక్షితమైన ప్రదేశంలో ఉండండి.\n" +
+            "2. తీవ్రమైన గాయం ఉన్న వ్యక్తిని అవసరం లేకుండా కదపవద్దు.\n" +
+            "3. Ambulance కోసం 108కి call చేయండి.";
+    }
+    else {
+        advice =
+            "🆘 Emergency Help\n\n" +
+            "దయచేసి సురక్షితమైన ప్రదేశానికి వెళ్లండి.\n\n" +
+            "📞 Emergency: 112\n" +
+            "🚑 Ambulance: 108\n" +
+            "🚒 Fire: 101";
+    }
+
+    alert(advice);
+}
