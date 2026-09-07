@@ -238,3 +238,60 @@ function saveMyPhone() {
 
     status.innerHTML = "✅ నా ఫోన్ నంబర్ సేవ్ అయింది";
 }
+function aiEmergencyHelp() {
+    const situation = prompt(
+        "🤖 AI Emergency Help\n\n" +
+        "మీకు ఏ emergency వచ్చింది?\n\n" +
+        "ఉదాహరణ: Accident, Fire, Chest pain, Snake bite, etc."
+    );
+
+    if (!situation) {
+        return;
+    }
+
+    const text = situation.toLowerCase();
+
+    let advice = "";
+
+    if (text.includes("fire") || text.includes("మంట") || text.includes("అగ్ని")) {
+        advice =
+            "🚒 Fire Emergency\n\n" +
+            "1. వెంటనే సురక్షితమైన ప్రదేశానికి వెళ్లండి.\n" +
+            "2. పొగ ఉన్న ప్రదేశంలో కిందికి వంగి బయటకు వెళ్లండి.\n" +
+            "3. Fire service కోసం 101కి call చేయండి.";
+    }
+    else if (
+        text.includes("accident") ||
+        text.includes("అక్సిడెంట్") ||
+        text.includes("రోడ్డు")
+    ) {
+        advice =
+            "🚑 Accident Emergency\n\n" +
+            "1. ముందుగా సురక్షితమైన ప్రదేశంలో ఉండండి.\n" +
+            "2. తీవ్రమైన గాయం ఉన్న వ్యక్తిని అవసరం లేకుండా కదపవద్దు.\n" +
+            "3. Ambulance కోసం 108కి call చేయండి.\n" +
+            "4. అవసరమైతే SOS button ఉపయోగించండి.";
+    }
+    else if (
+        text.includes("snake") ||
+        text.includes("పాము")
+    ) {
+        advice =
+            "🐍 Snake Bite Emergency\n\n" +
+            "1. ప్రశాంతంగా ఉండండి.\n" +
+            "2. కాటు వేసిన భాగాన్ని వీలైనంత స్థిరంగా ఉంచండి.\n" +
+            "3. వెంటనే ఆసుపత్రికి వెళ్లండి.\n" +
+            "4. గాయం కోయడం లేదా విషాన్ని నోటితో పీల్చడం చేయవద్దు.";
+    }
+    else {
+        advice =
+            "🆘 Emergency Help\n\n" +
+            "మీరు ప్రస్తుతం ప్రమాదంలో ఉంటే ముందుగా సురక్షితమైన ప్రదేశానికి వెళ్లండి.\n\n" +
+            "📞 Emergency: 112\n" +
+            "🚑 Ambulance: 108\n" +
+            "🚒 Fire: 101\n\n" +
+            "📍 మీ location కోసం SOS button ఉపయోగించండి.";
+    }
+
+    alert(advice);
+}
