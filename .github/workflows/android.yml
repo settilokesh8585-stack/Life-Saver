@@ -18,12 +18,12 @@ jobs:
           echo "Files in repository:"
           ls -la
           echo "Checking ZIP:"
-          ls -lh "$GITHUB_WORKSPACE/life-saver.zip"
+          ls -lh "$GITHUB_WORKSPACE/life-saver .zip"
 
       - name: Extract Android project
         run: |
           mkdir -p android-project
-          unzip -q "$GITHUB_WORKSPACE/life-saver.zip" -d android-project
+          unzip -q "$GITHUB_WORKSPACE/life-saver .zip" -d android-project
 
       - name: Find Android project
         run: |
