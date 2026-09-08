@@ -17,8 +17,7 @@ jobs:
         run: |
           echo "Files in repository:"
           ls -la
-          echo "Checking ZIP:"
-          ls -lh "$GITHUB_WORKSPACE/life saver. zip"
+          test -f "$GITHUB_WORKSPACE/life saver. zip"
 
       - name: Extract Android project
         run: |
@@ -28,8 +27,8 @@ jobs:
       - name: Find Android project
         run: |
           PROJECT_DIR=$(dirname "$(find "$GITHUB_WORKSPACE/android-project" -name settings.gradle.kts -print -quit)")
-          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
-            echo "Android project settings.gradle.kts not found"
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "Android project not found"
             exit 1
           fi
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
@@ -41,46 +40,24 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: "9.3.1"
-
-      - name: Create debug keystore
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: |
-          keytool -genkeypair \
-            -v \
-            -keystore debug.keystore \
-            -storepass android \
-            -alias androiddebugkey \
-            -keypass android \
-            -keyalg RSA \
-            -keysize 2048 \
-            -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
-
-          ls -lh debug.keystore
-
       - name: Build Debug APK
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew
-            ./gradlew assembleDebug
-          else
-            gradle assembleDebug
-          fi
+          chmod +x ./gradlew
+          ./gradlew clean assembleDebug
 
-      - name: Find APK
-        if: success()
+      - name: Verify APK
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
-          echo "APK files:"
-          find app/build/outputs/apk -type f -name "*.apk" -print
+          APK=$(find app/build/outputs/apk/debug -type f -name "*.apk" | head -n 1)
+          if [ -z "$APK" ]; then
+            echo "APK not found"
+            exit 1
+          fi
+          echo "APK found:"
+          ls -lh "$APK"
 
       - name: Upload APK
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: Life-Saver-APK
