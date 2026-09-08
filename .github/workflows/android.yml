@@ -21,20 +21,25 @@ jobs:
 
       - name: Extract Android project
         run: |
+          rm -rf android-project
           mkdir -p android-project
           unzip -q "$GITHUB_WORKSPACE/life saver. zip" -d android-project
 
       - name: Find Android project
         run: |
-          PROJECT_DIR=$(find "$GITHUB_WORKSPACE/android-project" -name settings.gradle.kts -print -quit)
+          PROJECT_FILE=$(find "$GITHUB_WORKSPACE/android-project" \
+            -name settings.gradle.kts \
+            -type f \
+            -print -quit)
 
-          if [ -z "$PROJECT_DIR" ]; then
+          if [ -z "$PROJECT_FILE" ]; then
             echo "settings.gradle.kts not found"
-            find "$GITHUB_WORKSPACE/android-project" -maxdepth 4 -type f | head -100
+            find "$GITHUB_WORKSPACE/android-project" -maxdepth 5 -type f | head -100
             exit 1
           fi
 
-          PROJECT_DIR=$(dirname "$PROJECT_DIR")
+          PROJECT_DIR=$(dirname "$PROJECT_FILE")
+
           echo "PROJECT_DIR=$PROJECT_DIR"
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
@@ -48,6 +53,23 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "9.3.1"
+
+      - name: Create debug keystore
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          keytool -genkeypair \
+            -v \
+            -keystore debug.keystore \
+            -storepass android \
+            -alias androiddebugkey \
+            -keypass android \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+          echo "Debug keystore created:"
+          ls -lh debug.keystore
 
       - name: Build Debug APK
         working-directory: ${{ env.PROJECT_DIR }}
@@ -63,9 +85,11 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
           echo "Searching for APK..."
-          find app/build/outputs/apk -type f -name "*.apk" -print
 
-          APK=$(find app/build/outputs/apk -type f -name "*.apk" -print -quit)
+          APK=$(find app/build/outputs/apk/debug \
+            -type f \
+            -name "*.apk" \
+            -print -quit)
 
           if [ -z "$APK" ]; then
             echo "APK not found"
